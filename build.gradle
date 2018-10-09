@@ -1,0 +1,59 @@
+plugins {
+	id 'java'
+}
+
+sourceCompatibility = 1.8
+
+repositories {
+	mavenLocal()
+	jcenter()
+	google()
+	maven {
+		url "http://repo.spring.io/plugins-release/"
+	}
+	mavenCentral()
+
+}
+
+apply plugin: 'maven-publish'
+
+task testJar(type: Jar, dependsOn: testClasses) {
+	classifier = 'tests'
+		from sourceSets.test.output
+}
+
+task sourceJar(type: Jar) {
+	from sourceSets.main.allJava
+}
+
+dependencies {
+		implementation 'com.palantir.docker.compose:docker-compose-rule-junit4:0.29.1'
+		implementation group: 'javax.annotation', name: 'javax.annotation-api', version: '1.2'
+		implementation 'com.google.guava:guava:25.1-jre'
+		implementation 'log4j:log4j:1.2.17'
+		implementation 'org.slf4j:slf4j-log4j12:1.8.0-beta2'
+        implementation group: 'org.apache.ignite', name: 'ignite-spring', version: '2.6.0'
+        testImplementation group: 'junit', name: 'junit', version: '4.12'
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			groupId 'com.uofantarctica'
+				artifactId 'riot'
+				version '0.1'
+				from components.java
+
+				artifact sourceJar {
+					classifier "sources"
+				}
+		}
+	}
+}
+
+test {
+    testLogging {
+        showStandardStreams = true
+    }
+}
+

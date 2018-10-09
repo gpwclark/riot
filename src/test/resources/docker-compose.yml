@@ -1,0 +1,47 @@
+version: '3'
+services:
+  riot-0:
+    build: ignite_riot
+    cap_add:
+    - NET_ADMIN
+    container_name: riot-0
+    depends_on:
+    - ignite
+    environment:
+    - RIOT_NAME=riot-0
+    volumes:
+    - ../../../:/opt/riot
+  riot-1:
+    build: ignite_riot
+    cap_add:
+     - NET_ADMIN
+    container_name: riot-1
+    depends_on:
+    - ignite
+    - riot-2
+    environment:
+    - RIOT_NAME=riot-1
+    volumes:
+     - ../../../:/opt/riot
+  riot-2:
+    build: ignite_riot
+    cap_add:
+    - NET_ADMIN
+    container_name: riot-2
+    depends_on:
+    - ignite
+    environment:
+    - RIOT_NAME=riot-2
+    volumes:
+    - ../../../:/opt/riot
+  ignite:
+    image: apacheignite/ignite
+    environment:
+    - IGNITE_QUITE=false
+    volumes:
+    - ./ignite-service.xml:/opt/ignite/apache-ignite-fabric/config/default-config.xml
+    ports:
+    - "47500"
+    - "47100"
+    - "11211"
+    - "49112"
