@@ -1,7 +1,7 @@
 version: '3'
 services:
   riot-2-0:
-    build: ignite_riot_2
+    build: ignite_riot2_rule
     cap_add:
     - NET_ADMIN
     container_name: riot-2-0
@@ -12,7 +12,7 @@ services:
     volumes:
     - ../../../:/opt/riot
   riot-2-1:
-    build: ignite_riot_2
+    build: ignite_riot_rule
     cap_add:
      - NET_ADMIN
     container_name: riot-2-1
@@ -24,7 +24,7 @@ services:
     volumes:
      - ../../../:/opt/riot
   riot-2-2:
-    build: ignite_riot_2
+    build: ignite_riot_rule
     cap_add:
     - NET_ADMIN
     container_name: riot-2-2
