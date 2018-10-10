@@ -3,14 +3,11 @@ package com.uofantarctica.riot;
 import com.palantir.docker.compose.DockerComposeRule;
 import com.palantir.docker.compose.connection.DockerPort;
 import com.palantir.docker.compose.connection.waiting.HealthChecks;
-import org.apache.ignite.IgniteCountDownLatch;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.RuleChain;
-import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +28,7 @@ public class ComposeRuleTest {
 	@Rule
 	public DockerComposeRule docker = DockerComposeRule.builder()
 		.file("src/test/resources/docker-compose-rule.yml")
+		.saveLogsTo("src/test/resources/docker-compose-rule.out")
 		.removeConflictingContainersOnStartup(true)
 		.waitingForService(IGNITE_SERVICE, HealthChecks.toHaveAllPortsOpen())
 		.build();
@@ -48,12 +46,12 @@ public class ComposeRuleTest {
 	public void setUp() {
 		log.debug("compose set up");
 		DockerPort dockerPort = docker.containers().container(IGNITE_SERVICE).port(IGNITE_DISCOVERY_PORT);
+		log.debug("using ip: {}, and port: {}.", dockerPort.getIp(), dockerPort.getExternalPort());
 		riotRule = new RiotRule(dockerPort.getIp(),
 				dockerPort.getExternalPort(),
-				timeout,
-				0,
-				"127.0.0.1",
-				47500);
+				1,
+				0);
+		log.debug("get test latch.");
 		latch = riotRule.countDownLatch( "integrationTestCountDownLatch", COMPOSE_HUBS);
 		log.debug("finish compose set up");
 	}
@@ -67,11 +65,12 @@ public class ComposeRuleTest {
 
 	@Test
 	public void startIgniteAndSyncTest() {
-		Assert.assertTrue("is true", true);
 		log.debug("Countdown latch.");
-		Assert.assertTrue("Latch should have decremented to below the max count.", latch.countDown() < COMPOSE_HUBS);
+		Assert.assertTrue("Latch should have decremented to below the max count.",
+				latch.countDown() < COMPOSE_HUBS);
 		log.debug("Wait for clients.");
 		Assert.assertTrue("Ignite clients did not countdown the latch.",
 				latch.await(timeout, TimeUnit.MILLISECONDS));
+		log.debug("We did it");
 	}
 }

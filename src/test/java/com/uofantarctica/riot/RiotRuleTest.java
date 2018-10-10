@@ -15,8 +15,8 @@ import static com.uofantarctica.riot.IgnitionAwaitTest.TEST_HUBS;
 
 public class RiotRuleTest {
 	private static final Logger log = LoggerFactory.getLogger(RiotRuleTest.class);
-	RiotLatch latch;
-	private final long timeout = 30000L;
+	private RiotLatch latch;
+	private final long timeout = 45000L;
 
 	@Rule
 	public RiotRule riotRule = new RiotRule("ignite", 47500, timeout, TEST_HUBS);

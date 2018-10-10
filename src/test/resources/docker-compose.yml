@@ -35,9 +35,9 @@ services:
     volumes:
     - ../../../:/opt/riot
   ignite:
-    image: apacheignite/ignite
+    build: apache_ignite #image: apacheignite/ignite
     environment:
-    - IGNITE_QUITE=false
+    - IGNITE_QUITE="false"
     volumes:
     - ./ignite-service.xml:/opt/ignite/apache-ignite-fabric/config/default-config.xml
     ports:
